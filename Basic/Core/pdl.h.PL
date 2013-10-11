@@ -258,6 +258,7 @@ typedef struct pdl_transvtable {
 
 #endif
 
+
 #define PDL_TR_MAGICNO 0x91827364
 #define PDL_TR_SETMAGIC(it) it->magicno = PDL_TR_MAGICNO
 #define PDL_TR_CLRMAGIC(it) it->magicno = 0x99876134
@@ -268,8 +269,17 @@ typedef struct pdl_transvtable {
 #endif
 
 
+/* Horrible hack -- for generic transes allocate a large number of PDL slots to ensure there 
+ * is always room. This works around a problem with late GCCs that optimize away the loop
+ * over pdls in transes due to the generic case formerly being written with an array of length 1
+ * 
+ * The right answer (hopefully for PDL 3.0) is to do this dynamic allocation better in the first place.
+ * 
+ * -- CED 11-Oct-2013 
+ */
+#define PDL_MAX_NP_IN_TRANS 20
 struct pdl_trans {
-	PDL_TRANS_START(1);
+	PDL_TRANS_START(PDL_MAX_NP_IN_TRANS);
 } ;
 
 typedef struct pdl_trans_affine {
