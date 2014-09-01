@@ -1,11 +1,5 @@
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
-
 # sub tapprox {
 # 	my($a,$b) = @_;
 # 	$c = abs($a-$b);
@@ -31,23 +25,23 @@ $b = pdl [[1,1,1],[2,2,2]];
 $i = 1;
 eval {$c = $b->slice(':,:,:,(1)'); $c->make_physical();};
 print "ERROR WAS: '$@'\n";
-ok(1,$@ =~ /too many dims/i);
+num_ok(1,$@ =~ /too many dims/i);
 
 $i++;
 # now see if we survive the destruction of this invalid trans
 $b = zeroes(5,3,3);
 $c = $b->slice(":,:,1");
-ok(2,1);  # if we're here we survived
+num_ok(2,1);  # if we're here we survived
 
 $i++;
 $b = pdl [[1,1,1],[2,2,2]];
 eval {$c = $b->dummy(5,1); $c->make_physical();};
-ok(3,!$@);
+num_ok(3,!$@);
 
 $i++;
 $b = zeroes(5,3,3);
 $c = $b->slice(":,:,1");
-ok(4,1);  
+num_ok(4,1);
 
 # if we're here we survived
 

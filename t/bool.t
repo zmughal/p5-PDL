@@ -1,16 +1,10 @@
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 
 $|=1;
 
 #  PDL::Core::set_debugging(1);
 kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
 
 sub pok { print "ok $_[0]\n" }
 
@@ -23,7 +17,7 @@ pok 1;
 $a = ones 3;
 eval {print "oops\n" if $a};
 print "ERROR WAS: '$@'\n";
-ok(2,$@ =~ /multielement/);
+num_ok(2,$@ =~ /multielement/);
 
 unless (all $a) { print "not " };
 pok 3;
@@ -34,4 +28,4 @@ pok 4;
 
 $a = ones 3;
 $b = $a + 1e-4;
-ok(5, all PDL::approx $a, $b, 1e-3);
+num_ok(5, all PDL::approx $a, $b, 1e-3);

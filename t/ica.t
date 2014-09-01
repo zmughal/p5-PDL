@@ -1,4 +1,5 @@
 
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 
 BEGIN {
@@ -19,13 +20,6 @@ use Carp;
 
 $SIG{__DIE__} = sub {print Carp::longmess(@_); die FOO;};
 
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
-
 # sub tapprox {
 # 	my($a,$b,$c,$d) = @_;
 # 	$c = abs($a-$b);
@@ -42,7 +36,7 @@ unless ($loaded) {
         }
         exit;
 }
-ok(1,$loaded);
+num_ok(1,$loaded);
 
 #DEFERRED
 

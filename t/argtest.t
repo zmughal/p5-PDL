@@ -1,14 +1,10 @@
 # tests for error checking of input args to PP compiled function
 #
+
+use t::lib::TestHelper; # TODO migrate
+
 use PDL::LiteF;
 kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
-
-sub ok {
-        my $no = shift ;
-        my $result = shift ;
-        print "not " unless $result ;
-        print "ok $no\n" ;
-}
 
 # sub tapprox {
 #         my($a,$b,$c,$d) = @_;
@@ -30,24 +26,24 @@ my $b=pdl([1,2,3])->long;
 my $a=[1,2,3];
 eval 'PDL::Ufunc::sumover($a,$b)';
 
-ok(1,!$@);
+num_ok(1,!$@);
 
 $aa=3;
 $a=\$aa;
 eval 'PDL::Ufunc::sumover($a,$b)';
 eprint $@;
-ok(2,$@ =~ /Error - tried to use an unknown/);
+num_ok(2,$@ =~ /Error - tried to use an unknown/);
 
 eval { PDL::Ufunc::sumover({}) };
 eprint $@;
 
-ok 3, $@ =~ /Hash given as a pdl - but not \{PDL} key/;
+num_ok 3, $@ =~ /Hash given as a pdl - but not \{PDL} key/;
 
 
 $c = 0;
 eval { PDL::Ufunc::sumover(\$c) };
 eprint $@;
 
-ok 4, $@ =~ /Error - tried to use an unknown/;
+num_ok 4, $@ =~ /Error - tried to use an unknown/;
 
 

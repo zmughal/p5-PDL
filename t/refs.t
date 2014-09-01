@@ -1,17 +1,11 @@
 
 # This test case points out a problem in the freeing
 # of used memory in 1.90_01
+use t::lib::TestHelper; # TODO migrate
 
 use PDL::LiteF;
 # PDL::Core::set_debugging(1);
 kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
 
 # sub tapprox {
 # 	my($a,$b,$c,$d) = @_;
@@ -43,7 +37,7 @@ $b->make_physical;
 $c->make_physical;
 }
 
-ok(1,1);
+num_ok(1,1);
 
 }
 
@@ -57,4 +51,4 @@ $b .=  ones(2,2);
 
 print $a;
 
-ok(2,1);
+num_ok(2,1);

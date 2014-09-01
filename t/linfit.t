@@ -1,3 +1,4 @@
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 BEGIN {
         eval " use PDL::Fit::Linfit; ";
@@ -33,7 +34,7 @@ my ($yfit, $coeffs) = PDL::linfit1d($data,$fitFuncs);
 
 my @coefs = $coeffs->list;
 
-ok( $testNo++, tapprox( $coefs[0], 3) && tapprox( $coefs[1], 2) && tapprox( $coefs[2], 3) );
+num_ok( $testNo++, tapprox( $coefs[0], 3) && tapprox( $coefs[1], 2) && tapprox( $coefs[2], 3) );
 
 
 # More Complex Example
@@ -105,7 +106,7 @@ my $fitFuncs = new PDL( \@functions);
 
 @coefs = $coeffs->list;
 
-ok( $testNo++, tapprox( $coefs[0], $expectedCoefs[0]) && 
+num_ok( $testNo++, tapprox( $coefs[0], $expectedCoefs[0]) && 
 		tapprox( $coefs[1], $expectedCoefs[1]) &&
 		tapprox( $coefs[2], $expectedCoefs[2]) &&
 		tapprox( $coefs[3], $expectedCoefs[3]) 
@@ -119,11 +120,3 @@ sub tapprox {
 					  # with a scalar
         $d < 0.00001;
 }
-#  Testing utility functions:
-sub ok {
-        my $no = shift ;
-        my $result = shift ;
-        print "not " unless $result ;
-        print "ok $no\n" ;
-}
-

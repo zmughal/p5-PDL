@@ -1,3 +1,4 @@
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 BEGIN {
         eval " use PDL::Fit::Polynomial; ";
@@ -13,13 +14,6 @@ unless ($loaded) {
                 print "ok $_ # Skipped: probably PDL::Slatec not available.\n";
         }
         exit;
-}
-
-sub ok {
-        my $no = shift ;
-        my $result = shift ;
-        print "not " unless $result ;
-        print "ok $no\n" ;
 }
 
 $x = sequence(20)-10;
@@ -41,4 +35,4 @@ $yfit = fitpoly1d($x,$y,4);
 
 #hold; line $x, $yfit;
 
-ok(1, max(abs($y-$yfit)) < 220); # need to add 10 for windows
+num_ok(1, max(abs($y-$yfit)) < 220); # need to add 10 for windows

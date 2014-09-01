@@ -5,13 +5,7 @@ use File::Temp qw(tempdir);
 use File::Spec;
 
 # we need tests with index shuffling once vaffines are fixed
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
+use t::lib::TestHelper; # TODO migrate
 
 sub tapprox {
 	my($a,$b,$mdiff) = @_;
@@ -86,13 +80,13 @@ for $raw (0,1) {
     if ($form->[0] ne 'GIF') {
       $scale = ($form->[3] ? $im1->dummy(0,3) : $im1);
       $comp = $scale / $form->[2];
-      ok($n++,tapprox($comp,$in1,$form->[4]));
+      num_ok($n++,tapprox($comp,$in1,$form->[4]));
     }
     $comp = ($form->[3] ? $im2->dummy(0,3) : $im2);
-    ok($n++,tapprox($comp,$in2));
+    num_ok($n++,tapprox($comp,$in2));
     $comp = ($form->[3] ? ($im3->dummy(0,3)>0)*255 : ($im3 > 0));
     $comp = $comp->ushort*65535 if $form->[0] eq 'SGI'; # yet another format quirk
-    ok($n++,tapprox($comp,$in3));
+    num_ok($n++,tapprox($comp,$in3));
 
     if ($PDL::debug) {
       print $in1->px unless $form->[0] eq 'TIFF';
