@@ -1,21 +1,9 @@
 # XXX SOME TESTS DISABLED
 
+use t::lib::TestHelper;
 use PDL::LiteF;
 
 kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	if($ENV{PDL_T}) {
-		if($result) { print "ok $no\n";return }
-		my ($p,$f,$l) = caller;
-		print "FAILED TEST $no AT $p $f $l\n";
-	} else {
-		print "not " unless $result ;
-		print "ok $no\n" ;
-	}
-}
 
 # XXX
 
@@ -33,13 +21,13 @@ $a->doflow;
 
 $b = $a + $a;
 
-ok(1,($b->at(0) == 4));
-ok(2,($b->at(1) == 6));
+caller_num_ok(1,($b->at(0) == 4));
+caller_num_ok(2,($b->at(1) == 6));
 
 $a->set(0,50);
 
-ok(3,($b->at(0) == 100));
-ok(4,($b->at(1) == 6));
+caller_num_ok(3,($b->at(0) == 100));
+caller_num_ok(4,($b->at(1) == 6));
 
 # 2. If we don't want flow, we mustn't have it.
 
@@ -47,13 +35,13 @@ $a = pdl 2,3,4;
 
 $b = $a + $a;
 
-ok(5,($b->at(0) == 4));
-ok(6,($b->at(1) == 6));
+caller_num_ok(5,($b->at(0) == 4));
+caller_num_ok(6,($b->at(1) == 6));
 
 $a->set(0,50);
 
-ok(7,($b->at(0) == 4));
-ok(8,($b->at(1) == 6));
+caller_num_ok(7,($b->at(0) == 4));
+caller_num_ok(8,($b->at(1) == 6));
 
 $ind = 9;
 
@@ -65,22 +53,22 @@ $a->doflow;
 
 $b = $a + $a;
 
-ok($ind++,($b->at(0) == 4));
-ok($ind++,($b->at(1) == 6));
+caller_num_ok($ind++,($b->at(0) == 4));
+caller_num_ok($ind++,($b->at(1) == 6));
 
 $b->set(0,50); # This must break the dataflow completely
 
-ok($ind++,($b->at(0) == 50));
-ok($ind++,($b->at(1) == 6));
-ok($ind++,($a->at(0) == 2));
-ok($ind++,($a->at(1) == 3));
+caller_num_ok($ind++,($b->at(0) == 50));
+caller_num_ok($ind++,($b->at(1) == 6));
+caller_num_ok($ind++,($a->at(0) == 2));
+caller_num_ok($ind++,($a->at(1) == 3));
 
 $a->set(0,33);
 
-ok($ind++,($b->at(0) == 50));
-ok($ind++,($b->at(1) == 6));
-ok($ind++,($a->at(0) == 33));
-ok($ind++,($a->at(1) == 3));
+caller_num_ok($ind++,($b->at(0) == 50));
+caller_num_ok($ind++,($b->at(1) == 6));
+caller_num_ok($ind++,($a->at(0) == 33));
+caller_num_ok($ind++,($a->at(1) == 3));
 
 # 4. Now a basic slice test. Once Incs etc. are back, need
 # to do this also with other kinds of slices.
@@ -89,7 +77,7 @@ ok($ind++,($a->at(1) == 3));
 
 $a = pdl [2,3,4],[5,6,7];
 
-ok($ind++, ("$a" eq <<END));
+caller_num_ok($ind++, ("$a" eq <<END));
 
 [
  [2 3 4]
@@ -98,7 +86,7 @@ ok($ind++, ("$a" eq <<END));
 END
 
 $b = $a->slice('1:2,:');
-ok($ind++, ("$b" eq <<END));
+caller_num_ok($ind++, ("$b" eq <<END));
 
 [
  [3 4]
@@ -107,7 +95,7 @@ ok($ind++, ("$b" eq <<END));
 END
 
 $a->set(1,1,9);
-ok($ind++, ("$a" eq <<END));
+caller_num_ok($ind++, ("$a" eq <<END));
 
 [
  [2 3 4]
@@ -115,7 +103,7 @@ ok($ind++, ("$a" eq <<END));
 ]
 END
 
-ok($ind++, ("$b" eq <<END));
+caller_num_ok($ind++, ("$b" eq <<END));
 
 [
  [3 4]
@@ -124,7 +112,7 @@ ok($ind++, ("$b" eq <<END));
 END
 
 $c = $a->slice('0:1,:');
-ok($ind++, ("$c" eq <<END));
+caller_num_ok($ind++, ("$c" eq <<END));
 
 [
  [2 3]
@@ -134,7 +122,7 @@ END
 
 $b->set(0,0,8);
 
-ok($ind++, ("$a" eq <<END));
+caller_num_ok($ind++, ("$a" eq <<END));
 
 [
  [2 8 4]
@@ -142,7 +130,7 @@ ok($ind++, ("$a" eq <<END));
 ]
 END
 
-ok($ind++, ("$b" eq <<END));
+caller_num_ok($ind++, ("$b" eq <<END));
 
 [
  [8 4]
@@ -150,7 +138,7 @@ ok($ind++, ("$b" eq <<END));
 ]
 END
 
-ok($ind++, ("$c" eq <<END));
+caller_num_ok($ind++, ("$c" eq <<END));
 
 [
  [2 8]
@@ -185,7 +173,7 @@ $a->doflow;
 
 $b = $a + 1;
 
-ok($ind++, ("$b" eq <<END));
+caller_num_ok($ind++, ("$b" eq <<END));
 
 [
  [3 4 5]
@@ -200,7 +188,7 @@ END
 
 $c = $b * 2; # This should stay the same flowed structure.
 
-ok($ind++, ("$c" eq <<END));
+caller_num_ok($ind++, ("$c" eq <<END));
 
 [
  [ 6  8 10]
@@ -246,7 +234,7 @@ $a->set(2,0,10);
 
 undef @ps;
 
-ok($ind++, ("$a" eq <<END));
+caller_num_ok($ind++, ("$a" eq <<END));
 
 [
  [ 8  9 10]
@@ -254,7 +242,7 @@ ok($ind++, ("$a" eq <<END));
 ]
 END
 
-ok($ind++, ("$b" eq <<END));
+caller_num_ok($ind++, ("$b" eq <<END));
 
 [
  [   9 10.5 11.5]
@@ -262,7 +250,7 @@ ok($ind++, ("$b" eq <<END));
 ]
 END
 
-ok($ind++, ("$c" eq <<END));
+caller_num_ok($ind++, ("$c" eq <<END));
 
 [
  [18 20 22]
@@ -270,7 +258,7 @@ ok($ind++, ("$c" eq <<END));
 ]
 END
 
-ok($ind++, ("$d" eq <<END));
+caller_num_ok($ind++, ("$d" eq <<END));
 
 [
  [10.5 11.5]
@@ -278,7 +266,7 @@ ok($ind++, ("$d" eq <<END));
 ]
 END
 
-ok($ind++, ("$e" eq <<END));
+caller_num_ok($ind++, ("$e" eq <<END));
 
 [
  [11.5]
@@ -286,7 +274,7 @@ ok($ind++, ("$e" eq <<END));
 ]
 END
 
-ok($ind++, ("$f" eq <<END));
+caller_num_ok($ind++, ("$f" eq <<END));
 
 [
  [18 21 23]
@@ -294,7 +282,7 @@ ok($ind++, ("$f" eq <<END));
 ]
 END
 
-ok($ind++, ("$g" eq <<END));
+caller_num_ok($ind++, ("$g" eq <<END));
 
 [
  [-3.5]
@@ -316,7 +304,7 @@ if(0) { # XXX DISABLED
 
 #	print $b;
 
-ok($ind++, ("$b" eq "[4 6 8]"));
+caller_num_ok($ind++, ("$b" eq "[4 6 8]"));
 
 #	$b->jdump;
 
@@ -326,7 +314,7 @@ ok($ind++, ("$b" eq "[4 6 8]"));
 #	$c->jdump;
 
 #	print $b;
-ok($ind++, ("$b" eq "[5 7 9]"));
+caller_num_ok($ind++, ("$b" eq "[5 7 9]"));
 #	$b->jdump;
 
 #	print "TOSETA\n";
@@ -336,7 +324,7 @@ ok($ind++, ("$b" eq "[5 7 9]"));
 #	$b->jdump();
 #	print "TOPRINTB\n";
 #	print $b;
-ok($ind++, ("$b" eq "[5 11 9]"));
+caller_num_ok($ind++, ("$b" eq "[5 11 9]"));
 
 #	print "EXITING SCOPE\n";
 
@@ -350,7 +338,7 @@ ok($ind++, ("$b" eq "[5 11 9]"));
 
 #	print $a;
 
-ok($ind++, ("$a" eq <<END));
+caller_num_ok($ind++, ("$a" eq <<END));
 
 [
  [0 0 0 0 0]
@@ -374,7 +362,7 @@ END
 
 #	print $c;
 
-ok($ind++, ("$c" eq <<END));
+caller_num_ok($ind++, ("$c" eq <<END));
 
 [
  [0 1 2]
@@ -389,7 +377,7 @@ END
 
 #	print $b;
 
-ok($ind++, ("$b" eq <<END));
+caller_num_ok($ind++, ("$b" eq <<END));
 
 [
  [0 0 0 0 0]
@@ -400,7 +388,7 @@ END
 
 #	print $a;
 
-ok($ind++, ("$a" eq <<END));
+caller_num_ok($ind++, ("$a" eq <<END));
 
 [
  [0 0 0 0 0]
@@ -424,11 +412,11 @@ END
          $a = zeroes 5,5;
          $b = $a->slice("1:3,1:3");
          my $c = $b->slice("(1),(1)");
-         ok($ind++,($c->at() == 0));
+         caller_num_ok($ind++,($c->at() == 0));
          $a .= 1;
-         ok($ind++,($c->at() == 1));
+         caller_num_ok($ind++,($c->at() == 1));
          $a .= 2;
-         ok($ind++,($c->at() == 2));
+         caller_num_ok($ind++,($c->at() == 2));
        }
 
 }

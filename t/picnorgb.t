@@ -6,17 +6,7 @@ use File::Temp qw(tempdir);
 use File::Spec;
 
 # we need tests with index shuffling once vaffines are fixed
-
-my $numbad = 0;
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-        $numbad++ unless $result;
-        $result;
-}
+use t::lib::TestHelper;
 
 sub tapprox {
 	my($a,$b,$mdiff) = @_;
@@ -69,6 +59,7 @@ $ntests = 3 * @allowed;  # -1 due to TIFF converter
 $ntests-- if grep /^TIFF$/, @allowed;
 if ($ntests < 1) {
   print("1..1\nok 1\n"); # dummy
+  num_ok(1,1);
   exit;
 }
 
@@ -120,13 +111,13 @@ foreach $format (sort @allowed) {
     if ($format ne 'TIFF') {
       $scale = ($form->[2] || rgb($in1) ? $im1->dummy(0,3) : $im1);
       $comp = $scale / PDL::ushort($form->[1]);
-      ok($n++,$usherr || tapprox($comp,$in1,$form->[3]));
+      numbad_ctr_ok($n++,$usherr || tapprox($comp,$in1,$form->[3]));
     }
     $comp = ($form->[2] || rgb($in2) ? $im2->dummy(0,3) : $im2);
-    ok($n++,tapprox($comp,$in2));
+    numbad_ctr_ok($n++,tapprox($comp,$in2));
     $comp = ($form->[2] || rgb($in3) ? ($im3->dummy(0,3)>0)*255 : ($im3 > 0));
     $comp = $comp->ushort*$in3->max if $format eq 'SGI' && $in3->max > 0;
-    ok($n++,tapprox($comp,$in3));
+    numbad_ctr_ok($n++,tapprox($comp,$in3));
 
     if ($PDL::debug) {
       print $in1->px unless $format eq 'TIFF';

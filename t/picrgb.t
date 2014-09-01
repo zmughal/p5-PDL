@@ -6,16 +6,7 @@ use File::Temp qw(tempdir);
 use File::Spec;
 
 # we need tests with index shuffling once vaffines are fixed
-my $numbad = 0;
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-        $numbad++ unless $result;
-        $result;
-}
+use t::lib::TestHelper;
 
 sub tapprox {
 	my($a,$b,$mdiff) = @_;
@@ -89,7 +80,8 @@ for (keys %formats) {
 
 $ntests = 2 * (@allowed);
 if ($ntests < 1) {
-  print("1..1\nok 1\n"); # dummy
+  print("1..1\n"); # dummy
+  num_ok(1,1);
   exit;
 }
 
@@ -127,8 +119,8 @@ foreach $form (sort @allowed) {
 
     $comp = $im1 / PDL::ushort(mmax(depends_on($form),$arr->[1]));
     print "# Comparison arr: $comp" if $PDL::debug;
-    ok($n++,$usherr || tapprox($comp,$in1,$arr->[3]) || tifftest($form));
-    ok($n++,tapprox($im2,$in2) || tifftest($form));
+    numbad_ctr_ok($n++,$usherr || tapprox($comp,$in1,$arr->[3]) || tifftest($form));
+    numbad_ctr_ok($n++,tapprox($im2,$in2) || tifftest($form));
 
     if ($PDL::debug) {
       print $in1->px;
