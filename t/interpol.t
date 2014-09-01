@@ -1,6 +1,7 @@
 
 # Simple test of the interpol routine
 
+use t::lib::TestHelper; # TODO migrate
 use PDL::Lite;
 
 
@@ -16,14 +17,7 @@ my $xvalues = -(new PDL (0..5))*.5;
 
 my $x = new PDL(-2);
 
-ok( $testNo++,$x->interpol($xvalues,$yvalues) == -16 );
+num_ok( $testNo++,$x->interpol($xvalues,$yvalues) == -16 );
 
 
 
-#  Testing utility functions:
-sub ok {
-        my $no = shift ;
-        my $result = shift ;
-        print "not " unless $result ;
-        print "ok $no\n" ;
-}

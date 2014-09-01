@@ -4,16 +4,10 @@
 ## Test of PDL::Char subclass -- treating byte PDLs as matrices of fixed strings
 #
 
+use t::lib::TestHelper; # TODO migrate
 use PDL;
 use PDL::Char;
 use strict;
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
 
 print "1..6\n";
 
@@ -35,18 +29,18 @@ qq{[
 };
 
 
-ok(1, ($stringized eq $comp));
+num_ok(1, ($stringized eq $comp));
 $a->setstr(0,0,1, 'foo');
-ok(2, ($a->atstr(0,0,1) eq 'foo'));
+num_ok(2, ($a->atstr(0,0,1) eq 'foo'));
 $a->setstr(2,0,0, 'barfoo');
-ok(3, ($a->atstr(2,0,0) eq 'bar'));
+num_ok(3, ($a->atstr(2,0,0) eq 'bar'));
 $a->setstr(0,0,1, 'f');
-ok(4, ($a->atstr(0,0,1) eq "f"));
+num_ok(4, ($a->atstr(0,0,1) eq "f"));
 $b = sequence (byte, 4, 5) + 99;
 $b = PDL::Char->new($b);
 $stringized = $b->string;
 $comp = "[ 'cdef' 'ghij' 'klmn' 'opqr' 'stuv' ] \n";
-ok(5, ($stringized eq $comp));
+num_ok(5, ($stringized eq $comp));
 
 
 
@@ -61,4 +55,4 @@ my $comp2 =
 ] 
 ";
 
-ok(6, ("$varstr" eq $comp2));
+num_ok(6, ("$varstr" eq $comp2));

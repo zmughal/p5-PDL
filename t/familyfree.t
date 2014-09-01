@@ -1,12 +1,6 @@
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
 
 # sub tapprox {
 # 	my($a,$b,$c,$d) = @_;
@@ -28,4 +22,4 @@ $a = 1;  # Undefine orig. a
 
 $b += 1;
 
-ok(1,1);
+num_ok(1,1);

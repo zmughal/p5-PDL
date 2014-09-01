@@ -1,6 +1,7 @@
 # Test ->clump(). This is not yet good enough: we need
 # nasty test cases
 
+use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 
 $|=1;
@@ -18,13 +19,6 @@ kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 #
 #exit 4;
 
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	print "not " unless $result ;
-	print "ok $no\n" ;
-}
 
 sub tapprox {
 	my($a,$b) = @_;
@@ -80,7 +74,7 @@ $b = $a->clump(-1);
 
 print $b;
 
-ok(1,tapprox($b,pdl [0,1,2,10,11,12,20,21,22]));
+num_ok(1,tapprox($b,pdl [0,1,2,10,11,12,20,21,22]));
 
 # print $b;
 
@@ -97,6 +91,6 @@ $f= $e->copy();;
 kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 # ok(2,$@ =~ /^clump: Increments do not match/);
 # Clump supports this now.
-ok(2,tapprox($d,pdl [0,2,10,12,20,22]));
+num_ok(2,tapprox($d,pdl [0,2,10,12,20,22]));
 
-ok(3,tapprox($e,pdl [10,12,20]));
+num_ok(3,tapprox($e,pdl [10,12,20]));
