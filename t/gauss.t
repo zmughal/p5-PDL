@@ -1,5 +1,6 @@
 # Test routine for PDL::Fit::Gaussian module
 
+use t::lib::TestHelper; # TODO migrate
 use PDL;
 use PDL::Fit::Gaussian;
 
@@ -8,13 +9,6 @@ print "1..2\n";
 
 kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
-$count=1;
-sub ok {
-        my $no = $count++ ;
-        my $result = shift ;
-        print "not " unless $result ;
-        print "ok $no\n" ;
-}
 sub nint{int($_[0]->at+0.5)};
 
 $g1 = pdl qw[ 2.1990459  1.9464173  2.1565406  2.1672124  2.2701938   
@@ -37,13 +31,13 @@ my ($xc, $pk, $fwhm, $back, $err, $fit) = fitgauss1d(xvals($g1), $g1);
 
 #points $g1; hold; line $fit; rel;
 
-ok( nint($xc)==16 && nint($pk)==11 && nint($fwhm)==4 && nint($back)==2
+ctr_ok( nint($xc)==16 && nint($pk)==11 && nint($fwhm)==4 && nint($back)==2
   && nint($err)==0 && sum(abs($g1-$fit))<10);
 
 ($pk, $fwhm, $back, $err, $fit) = fitgauss1dr(xvals($g2),$g2);
 
 #points $g2; hold; line $fit; rel;
 
-ok(nint($pk)==11 && nint($fwhm)==4 && nint($back)==2
+ctr_ok(nint($pk)==11 && nint($fwhm)==4 && nint($back)==2
   && nint($err)==0 && sum(abs($g2-$fit))<10);
 

@@ -2,23 +2,11 @@
 # This test case is very similar to pthread.t, but it uses the auto pthread
 #  interface, instead of specificaly setting pthread magic on individual PDLs
 
+use t::lib::TestHelper;
 use PDL::LiteF;
 use Benchmark ':hireswallclock';
 
 kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
-
-sub ok {
-	my $no = shift ;
-	my $result = shift ;
-	if($ENV{PDL_T}) {
-		if($result) { print "ok $no\n";return }
-		my ($p,$f,$l) = caller;
-		print "FAILED TEST $no AT $p $f $l\n";
-	} else {
-		print "not " unless $result ;
-		print "ok $no\n" ;
-	}
-}
 
 sub tapprox {
        my($a,$b,$mdiff) = @_;
@@ -44,14 +32,14 @@ if (PDL::Core::pthreads_enabled) {
     
   timethese(20,{threaded => '$a **= 1.3'});
   
-  ok( 1, get_autopthread_actual() == 10); # should have split into 10 threads
+  caller_num_ok( 1, get_autopthread_actual() == 10); # should have split into 10 threads
   
   # Set target to 0 for comparison to unthreaded
   set_autopthread_targ(0);
   timethese(20,{unthreaded => '$b **= 1.3'});
   
   print $a->slice('0:20'),"\n";
-  ok(2,tapprox($a,$b));
+  caller_num_ok(2,tapprox($a,$b));
   
   # Another Test Case
   $a = sequence(3,10);
@@ -61,7 +49,7 @@ if (PDL::Core::pthreads_enabled) {
   print $c,"\n";
   $cc = $a->sumover;
   print $cc,"\n";
-  ok(3,tapprox($c,$cc));
+  caller_num_ok(3,tapprox($c,$cc));
   
   # Try multi-dim cases
   set_autopthread_targ(2);
@@ -70,7 +58,7 @@ if (PDL::Core::pthreads_enabled) {
   $a+=1;
   set_autopthread_targ(0); # Turn off pthreading for $b adding
   $b+=1; 
-  ok(4, tapprox($a, $b));
+  caller_num_ok(4, tapprox($a, $b));
 
   ### Multi-dimensional incrementing case ###
   ##  This is performed multiple times to be sure that indexing isn't
@@ -80,7 +68,7 @@ if (PDL::Core::pthreads_enabled) {
   foreach (1..20){
   	$a = zeroes(3, 200000,2,2);
 	$a += 1;
-	ok( $testNo++, $a->max <  1.1  ); # Should never be greater than 1
+	caller_num_ok( $testNo++, $a->max <  1.1  ); # Should never be greater than 1
    }
 
 
@@ -102,16 +90,16 @@ if (PDL::Core::pthreads_enabled) {
 
    # Check for writeback to the parent PDL working (should have three ones in the array)
    my $lutExSum = $lutEx->sum;
-   ok( $testNo++, tapprox($lutExSum, pdl(3)) );
+   caller_num_ok( $testNo++, tapprox($lutExSum, pdl(3)) );
 
    # Check for inplace assignment working. $in should be all ones
    my $inSum = $in->sum;
-   ok( $testNo++, tapprox($inSum, pdl(2) ) );
+   caller_num_ok( $testNo++, tapprox($inSum, pdl(2) ) );
 
 
 
 } else {
   print "1..1\n";
-  print "ok 1\n";
+  num_ok(1,1);
 }
 
