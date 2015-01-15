@@ -1,26 +1,11 @@
 use strict;
-
 use Config;
 use File::Basename qw(&basename &dirname);
 use IO::File;
 
-# List explicitly here the variables you want Configure to
-# generate.  Metaconfig only looks for shell variables, so you
-# have to mention them as if they were shell variables, not
-# %Config entries.  Thus you write
-#  $startperl
-# to ensure Configure will look for $Config{startperl}.
-
-# This forces PL files to create target in same directory as PL file.
-# This is so that make depend always knows where to find PL derivatives.
-chdir(dirname($0));
-my $file;
-($file = basename($0)) =~ s/\.PL$//;
-$file =~ s/\.pl$//
-    if ($^O eq 'VMS' or $^O eq 'os2');  # "case-forgiving"
-
+my $file = shift @ARGV;
 unlink $file if -f $file;
-my $fh = new IO::File "> $file" or die "Can't create $file: $!";
+open my $fh, ">", $file or die "Can't create $file: $!";
 
 # check for bad value support
 our $bvalflag;

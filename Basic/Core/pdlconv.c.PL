@@ -7,7 +7,7 @@ use strict;
 use Config;
 use File::Basename qw(&basename &dirname);
  
-require 'Dev.pm'; PDL::Core::Dev->import;
+use PDL::Core::Dev;
 use vars qw( %PDL_DATATYPES );
 
 # This forces PL files to create target in same directory as PL file.

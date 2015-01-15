@@ -3,7 +3,7 @@ use Config;
 $PDL_Indx_type = $Config{'ivtype'};
 warn "Using new 64bit index support\n" if $Config{'ivsize'}==8;
 
-use lib ".";
+use lib qw(. lib/PDL);
 require 'Types.pm';
 *T = *PDL::Types::typehash; # Alias
 

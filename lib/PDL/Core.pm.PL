@@ -10,12 +10,12 @@ use strict;
 
 use Config;
 use File::Basename qw(&basename &dirname);
+use lib qw(Basic/Core lib);
 
 # check for bad value support
-use vars qw( $bvalflag $usenan $bvalPerPdl );
+our ($bvalflag, $usenan, $bvalPerPdl);
 require "badsupport.p";
-require 'Types.pm';
-PDL::Types->import(':All');
+use PDL::Types ':All';
 
 # This forces PL files to create target in same directory as PL file.
 # This is so that make depend always knows where to find PL derivatives.
@@ -304,7 +304,7 @@ my \@exports_normal   = (\@EXPORT,
 !WITH!SUBS!
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 use PDL::Exporter;
 use DynaLoader;
 
@@ -343,7 +343,7 @@ $PDL::toolongtoprint = 10000;  # maximum pdl size to stringify for printing
 print OUT "$typealiases\n";
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 BEGIN {
     *thread_define = \&PDL::thread_define;
@@ -2093,7 +2093,7 @@ if ( $bvalflag ) {
 print OUT "\n\n=cut\n\n";
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 =item C
 
@@ -2807,7 +2807,7 @@ byte|short|ushort|long|longlong|float|double (shorthands to convert datatypes)
 print OUT "=for ref\n\n$convertalts (shorthands to convert datatypes)\n\n=cut\n\n";
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 =for usage
 
@@ -2919,7 +2919,7 @@ for my $type (typesrtkeys()) {
 print OUT "\n=cut\n\nfor ( $typearray )\n";
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 {
 	eval ('sub PDL::'.$_->[0]." { ".
@@ -3043,7 +3043,7 @@ list converts any bad values into the string 'BAD'.
 }
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 # No threading, just the ordinary dims.
 sub PDL::list{ # pdl -> @list
@@ -3103,7 +3103,7 @@ unpdl converts any bad values into the string 'BAD'.
 }
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 sub PDL::unpdl {
     barf 'Usage: unpdl($pdl)' if $#_ != 0;
@@ -3234,7 +3234,7 @@ at converts any bad values into the string 'BAD'.
 }
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 sub PDL::at {     # Return value at ($x,$y,$z...)
     barf 'Usage: at($pdl, $x, $y, ...)' if $#_<0;
@@ -3357,7 +3357,7 @@ The output piddle is set bad if any input piddles have their bad flag set.
 } # if: $bvalflag
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 
 =pod
 
@@ -3543,7 +3543,7 @@ The output piddles are set bad if the original piddle has its bad flag set.
 } # if: $bvalflag
 
 print OUT '# line ' . (__LINE__ + 2) . <<'!NO!SUBS!';
- "Basic/Core/Core.pm.PL (i.e. PDL::Core.pm)"
+ "lib/PDL/Core.pm.PL (i.e. PDL::Core)"
 sub PDL::dog {
   my $opt = pop @_ if ref($_[-1]) eq 'HASH';
   my $p = shift;

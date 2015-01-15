@@ -2,6 +2,7 @@
 
 use Config;
 use File::Basename qw(&basename &dirname);
+use lib 'Basic/Core';
 
 require "pdl_hfiles.p";
 

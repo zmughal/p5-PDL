@@ -9,7 +9,7 @@ my @tables = glob( "*.fits" );
 
 WriteMakefile(
   'NAME'         => 'PDL::Graphics::LUT::ramps::DATA',   
-  'VERSION_FROM' => '../../../Basic/Core/Version.pm',
+  'VERSION_FROM' => '../../../lib/PDL/Version.pm',
   'PM' => {
       (map {($_,'$(INST_LIBDIR)/'.$_)} @tables)
    },

@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker;
 # different...
 
 # bad value support?
-use vars qw( $bvalflag $usenan $bvalPerPdl );
+our ( $bvalflag, $usenan, $bvalPerPdl );
 use File::Spec;
 require File::Spec->catfile( File::Spec->updir, "Core", "badsupport.p" );
 
@@ -28,9 +28,7 @@ if ( $bvalflag ) {
 print "\n";
 
 my @pack = (["bad.pd",qw(Bad PDL::Bad)]);
-
 my %hash = pdlpp_stdargs_int(@pack);
-
 #$hash{LIBS} = ['-lm'];
 
 # we add ../Core/badsupport.p to the dependencies of Bad.pm

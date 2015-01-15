@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 WriteMakefile(
         NAME => 'PDL::Filter',
-        VERSION_FROM => '../../Basic/Core/Version.pm',
+        VERSION_FROM => '../../lib/PDL/Version.pm',
         PM => {
          map {($_ => '$(INST_LIBDIR)/Filter/'.$_)} <*.pm>
         },

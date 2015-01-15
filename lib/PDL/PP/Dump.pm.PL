@@ -3,11 +3,11 @@
 # use blib; # For Types.pm
 # require './PP.pm';
 
-open PP, "PP.pm" or die "can't open PP.pm";
-$str = join '',<PP>;
+my $infile = "lib/PDL/PP.pm";
+open my $fh, '<', $infile or die "can't open $infile";
+$str = join '',<$fh>;
 $str =~ m|\@PDL::PP::EXPORT\s*=\s*qw/([^/]*)/|s;
 $str = $1; # Get the contents of the qw//
-
 
 $pm = '
 =head1 NAME
@@ -97,5 +97,6 @@ sub pp_def {
 1;
 |;
 
-print $pm;
-
+my $outfile = shift @ARGV;
+open my $outfh, '>', $outfile or die "open >$outfile: $!";
+print $outfh $pm;

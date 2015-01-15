@@ -28,10 +28,10 @@ my %man3pods = map { my $h = '$(INST_MAN3DIR)/';
                      ( $_, $h . substr($_,0,length($_)-3) . '.$(MAN3EXT)' ); 
                    } @pm_names;
 WriteMakefile(
-               'NAME'         => 'PDL',
-               'VERSION_FROM' => '../Basic/Core/Version.pm',
-               'PM'           => \%pm,
-               'MAN3PODS'     => \%man3pods,
-               'DIR'          => [@subdirs],
-    (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
+  'NAME'         => 'PDL',
+  'VERSION_FROM' => '../lib/PDL/Version.pm',
+  'PM'           => \%pm,
+  'MAN3PODS'     => \%man3pods,
+  'DIR'          => \@subdirs,
+  'NO_MYMETA'    => 1,
 );

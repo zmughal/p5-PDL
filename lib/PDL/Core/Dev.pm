@@ -91,8 +91,8 @@ sub whereami_any {
 
 sub whereami {
    for $dir (@INC,qw|. .. ../.. ../../.. ../../../..|) {
-      return ($_[0] ? $dir . '/Basic' : $dir)
-	if -e "$dir/Basic/Core/Dev.pm";
+      return ($_[0] ? $dir . '/lib/PDL' : $dir)
+	if -e "$dir/lib/PDL/Core/Dev.pm";
    }
    die "Unable to determine UNINSTALLED directory path to PDL::Core::Dev module\n"
     if !$_[0];
@@ -122,7 +122,7 @@ unless ( %PDL::Config ) {
     my $dir;
     $dir = whereami(1);
     if ( defined $dir ) {
-	$dir = abs_path($dir . "/Core");
+	$dir = abs_path($dir);
     } else {
 	# as no argument given whereami_inst will die if it fails
         # (and it also returns a slightly different path than whereami(1)
@@ -363,12 +363,18 @@ EOF
 #
 # added badsupport.p as a requisite
 sub pdlpp_postamble_int {
-	join '',map { my($src,$pref,$mod) = @$_;
-	my $w = whereami_any();
-	$w =~ s%/((PDL)|(Basic))$%%;  # remove the trailing subdir
-	my $basic = File::Spec->abs2rel(File::Spec->catdir($w, 'Basic'));
-	my $core = File::Spec->catdir($basic, 'Core');
-	my $gen = File::Spec->catdir($basic, 'Gen');
+    require ExtUtils::MM;
+    join '',map { my($src,$pref,$mod) = @$_;
+    my $w = whereami_any();
+    my @d = File::Spec->splitdir($w);
+    if ($d[-1] eq 'Basic') {
+        splice @d, -1;
+    } elsif ($d[-2] eq 'lib' and $d[-1] eq 'PDL') {
+        splice @d, -2;
+    }
+    my $top = File::Spec->abs2rel(File::Spec->catdir(@d));
+    my $core = File::Spec->catdir($top, qw(Basic Core));
+    my $lib_pdl = File::Spec->catdir($top, qw(lib PDL));
 
 ## I diked out a "$gen/pm_to_blib" dependency (between $core/badsupport.p and
 # $core/Types.pm below), because it appears to be causing excessive recompiles.
@@ -379,15 +385,15 @@ sub pdlpp_postamble_int {
 
 qq|
 
-$pref.pm: $src $core/badsupport.p $core/Types.pm
+$pref.pm : $src $core/badsupport.p $lib_pdl/Types.pm
 	\$(PERLRUNINST) \"-MPDL::PP qw/$mod $mod $pref/\" $src
 
-$pref.xs: $pref.pm
+$pref.xs : $pref.pm
 	\$(TOUCH) \$@
 
-$pref.c: $pref.xs
+$pref.c : $pref.xs
 
-$pref\$(OBJ_EXT): $pref.c
+$pref\$(OBJ_EXT) : $pref.c
 |
 	} (@_)
 }
@@ -425,7 +431,7 @@ my $libsarg = $libs || $malloclib ? "$libs $malloclib " : ''; # for Win32
  return (
  	%::PDL_OPTIONS,
 	 'NAME'  	=> $mod,
-	 'VERSION_FROM' => "$w/Basic/Core/Version.pm",
+	 'VERSION_FROM' => "$w/lib/PDL/Version.pm",
 	 'TYPEMAPS'     => [&PDL_TYPEMAP()],
 	 'OBJECT'       => "$pref\$(OBJ_EXT)",
 	 PM 	=> {"$pref.pm" => "\$(INST_LIBDIR)/$pref.pm"},
@@ -433,7 +439,6 @@ my $libsarg = $libs || $malloclib ? "$libs $malloclib " : ''; # for Win32
 	 'INC'          => &PDL_INCLUDE()." $inc $mallocinc",
 	 'LIBS'         => $libsarg ? [$libsarg] : [],
 	 'clean'        => {'FILES'  => "$pref.xs $pref.pm $pref\$(OBJ_EXT) $pref.c"},
-     (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
  );
 }
 
@@ -450,7 +455,7 @@ sub pdlpp_stdargs {
 	 'INC'          => &PDL_INST_INCLUDE()." $inc",
 	 'LIBS'         => $libs ? ["$libs "] : [],
 	 'clean'        => {'FILES'  => "$pref.xs $pref.pm $pref\$(OBJ_EXT) $pref.c"},
-     (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
+         'NO_MYMETA' => 1,
  );
 }
 

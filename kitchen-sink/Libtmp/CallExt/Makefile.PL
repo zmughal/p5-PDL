@@ -1,14 +1,13 @@
 use strict;
 use warnings;
+use ExtUtils::MakeMaker;
 
 my $malloclib = $PDL::Config{MALLOCDBG}->{libs};
 my $mallocinc = $PDL::Config{MALLOCDBG}->{include};
 
-use ExtUtils::MakeMaker;
 WriteMakefile(
  'NAME'	        => 'PDL::CallExt',
- 'VERSION_FROM' => '../../Basic/Core/Version.pm',
+ 'VERSION_FROM' => '../../lib/PDL/Version.pm',
  'INC' => "-I../../Basic/Core $mallocinc",
  'LIBS' => [$malloclib],
- (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
 );
