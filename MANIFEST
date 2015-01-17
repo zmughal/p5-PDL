@@ -491,9 +491,8 @@ Libtmp/Minuit/minuit.pd
 Libtmp/Minuit/minuitlib/futils.f
 Libtmp/Minuit/minuitlib/intracfalse.f
 Libtmp/Minuit/minuitlib/minuit.f
-Libtmp/Opt/Makefile.PL
-Libtmp/Opt/Simplex/Makefile.PL
-Libtmp/Opt/Simplex/Simplex.pm
+Libtmp/Simplex/Makefile.PL
+Libtmp/Simplex/Simplex.pm
 Libtmp/Slatec/Makefile.PL
 Libtmp/Slatec/slatec.pd
 Libtmp/Slatec/slatec/chfcm.f
