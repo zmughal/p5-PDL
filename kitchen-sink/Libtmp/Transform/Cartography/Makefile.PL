@@ -8,5 +8,5 @@ WriteMakefile(
         VERSION_FROM => '../../../lib/PDL/Version.pm',
 	      PM => { (map {($_ => '$(INST_LIBDIR)/'.$_)}  <*.pm>), 
 		      (map {($_ => '$(INST_LIBDIR)/Cartography/'.$_)} <*.fits *.jpg>)},
-    (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
+    NO_MYMETA => 1,
 );

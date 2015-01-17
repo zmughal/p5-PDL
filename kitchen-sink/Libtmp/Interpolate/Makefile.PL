@@ -6,4 +6,5 @@ WriteMakefile(
 	      NAME => "PDL::Interpolate",
 	      VERSION_FROM => "../../lib/PDL/Version.pm",
               DIR => [ 'Slatec' ],
+              NO_MYMETA => 1,
 );

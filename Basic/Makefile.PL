@@ -8,6 +8,7 @@ system("copy default.perldlrc default.pdl") if $^O =~ /win32/i;
 WriteMakefile(
     'NAME'	=> 'PDL',
     'VERSION_FROM' => '../lib/PDL/Version.pm',
+    NO_MYMETA => 1,
 );
 
 # modify clean method not to delete files named 'core'

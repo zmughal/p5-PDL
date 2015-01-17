@@ -143,5 +143,5 @@ WriteMakefile(
  'INC'          => join(' ',
    PDL_INCLUDE(), map {length($_) ? qq{"$_"} : ()} $pthread_include, $mallocinc
  ),
- 'NO_MYMETA' => 1,
+ NO_MYMETA => 1,
 );

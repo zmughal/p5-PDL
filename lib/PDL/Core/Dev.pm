@@ -430,15 +430,16 @@ sub pdlpp_stdargs_int {
 my $libsarg = $libs || $malloclib ? "$libs $malloclib " : ''; # for Win32
  return (
  	%::PDL_OPTIONS,
-	 'NAME'  	=> $mod,
-	 'VERSION_FROM' => "$w/lib/PDL/Version.pm",
-	 'TYPEMAPS'     => [&PDL_TYPEMAP()],
-	 'OBJECT'       => "$pref\$(OBJ_EXT)",
+	 NAME  	=> $mod,
+	 VERSION_FROM => "$w/lib/PDL/Version.pm",
+	 TYPEMAPS     => [&PDL_TYPEMAP()],
+	 OBJECT       => "$pref\$(OBJ_EXT)",
 	 PM 	=> {"$pref.pm" => "\$(INST_LIBDIR)/$pref.pm"},
 	 MAN3PODS => {"$pref.pm" => "\$(INST_MAN3DIR)/$mod.\$(MAN3EXT)"},
-	 'INC'          => &PDL_INCLUDE()." $inc $mallocinc",
-	 'LIBS'         => $libsarg ? [$libsarg] : [],
-	 'clean'        => {'FILES'  => "$pref.xs $pref.pm $pref\$(OBJ_EXT) $pref.c"},
+	 INC          => &PDL_INCLUDE()." $inc $mallocinc",
+	 LIBS         => $libsarg ? [$libsarg] : [],
+	 clean        => {'FILES'  => "$pref.xs $pref.pm $pref\$(OBJ_EXT) $pref.c"},
+         NO_MYMETA => 1,
  );
 }
 

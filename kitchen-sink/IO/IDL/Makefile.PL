@@ -10,5 +10,5 @@ undef &MY::postamble; # suppress warning
 WriteMakefile(
      NAME => "PDL::IO::IDL",
      'VERSION_FROM' => '../../lib/PDL/Version.pm',
-    (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
+    NO_MYMETA => 1,
 );

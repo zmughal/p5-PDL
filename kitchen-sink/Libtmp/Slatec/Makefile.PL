@@ -139,4 +139,5 @@ slatec/$_\$(OBJ_EXT): slatec/$_.f
 WriteMakefile(
  %hash,
  VERSION => "0.12",   # This is overridden by VERSION_FROM in %hash 
+ NO_MYMETA => 1,
 );

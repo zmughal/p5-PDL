@@ -7,5 +7,5 @@ WriteMakefile(
 	VERSION_FROM => '../../lib/PDL/Version.pm',
 	DIR =>  [ qw/Gaussian/ ],
 	PM => { map {($_ => '$(INST_LIBDIR)/Fit/'.$_)} <*.pm> },
-        (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
+        NO_MYMETA => 1,
 );

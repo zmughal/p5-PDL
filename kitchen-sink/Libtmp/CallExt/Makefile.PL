@@ -10,4 +10,5 @@ WriteMakefile(
  'VERSION_FROM' => '../../lib/PDL/Version.pm',
  'INC' => "-I../../Basic/Core $mallocinc",
  'LIBS' => [$malloclib],
+ NO_MYMETA => 1,
 );

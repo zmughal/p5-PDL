@@ -166,5 +166,5 @@ WriteMakefile(
         SUFFIX => 'gz',
     },
     DIR => [ 'SD', 'VS' ],
-    (eval ($ExtUtils::MakeMaker::VERSION) >= 6.57_02 ? ('NO_MYMETA' => 1) : ()),
+    NO_MYMETA => 1,
 );
