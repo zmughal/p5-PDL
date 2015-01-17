@@ -441,7 +441,7 @@ my %notestsifmodulesmissing = @hasnt ? # are any required modules missing ?
   (test => {TESTS => 't/requiredmods.t'}) : ();
 
 my @podpms = map { $_.".pod", '$(INST_LIBDIR)/PDL/' . $_ .".pod"}
-  qw/Bugs perldl pdldoc/;
+  qw/Bugs/;
 
 my @prereq = (
 	   'Astro::FITS::Header' => 0,
@@ -515,10 +515,6 @@ my %makefile_hash = (
                     },
                  },
               },
-              'MAN1PODS' => { 'Bugs.pod' => '$(INST_MAN1DIR)/PDL::Bugs.$(MAN1EXT)',
-                              'perldl' => '$(INST_MAN1DIR)/perldl.$(MAN1EXT)',
-                              'pdldoc' => '$(INST_MAN1DIR)/pdldoc.$(MAN1EXT)' },
-	      'MAN3PODS' => {}, # don't pick up the script pods again
 	      'OPTIMIZE'  => $PDL::Config{OPTIMIZE} || $Config{optimize},
 	      'CCFLAGS' => $ccflags,
 	      'linkext'  => { LINKTYPE => '' },  # No linking required
@@ -609,16 +605,6 @@ doc_perl_install ::
   } else {
     $text=~ s/\%HTML\%//og; # Remove just %HTML% markers
   }
-
-$text .= << "EOPS" ;
-
-perldl.pod : perldl subdirs
-\t\$(PERLRUN) -MPod::Select -e "podselect('perldl');" > perldl.pod
-
-pdldoc.pod : pdldoc subdirs
-\t\$(PERLRUN) -MPod::Select -e "podselect('pdldoc');" > pdldoc.pod
-
-EOPS
 
 $text .= <<EOT if $^O !~ /MSWin/;
 pdl$Config{exe_ext} : pdl.c
