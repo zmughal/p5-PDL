@@ -503,7 +503,7 @@ my %makefile_hash = (
 	      'EXE_FILES' => \@exe_files,
 	      'PM' => { @podpms }, #so that the script docs are picked up
               'META_MERGE' => {
-                 no_index => { directory => [ 'Lib/FFTW' ], },
+                 no_index => { directory => [ 'Libtmp/FFTW' ], },
                  resources => {
                     homepage => 'http://pdl.perl.org/',
                     bugtracker  => 'http://sourceforge.net/p/pdl/bugs/',
