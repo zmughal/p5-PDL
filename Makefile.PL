@@ -483,9 +483,8 @@ if($Config{archname}=~m/x86_64/) {
     $ccflags .= " -fPIC";
 }
 
-# create GENERATED subdir with *.pm files during 'make dist' (to make metacpan.org happy)
-my $preop = '$(PERL) -I$(INST_ARCHLIB) -I$(INST_LIB) -MPDL::Core::Dev -e pdlpp_genpm $(DISTVNAME)';
-$preop .= q[ && git log --stat --since='29 Apr 2009' > Changes.new && $(MV) Changes.new $(DISTVNAME)/Changes] if $^O ne 'MSWin32';
+my $preop = '';
+$preop .= q[git log --stat --since='29 Apr 2009' > Changes.new && $(MV) Changes.new $(DISTVNAME)/Changes] if $^O ne 'MSWin32';
 
 if (-f 'pdl.c') {
     warn "WARNING: pdl.c found from previous build, deleting\n";
@@ -525,7 +524,7 @@ my %makefile_hash = (
                                                # in this directory
 	      'dist'     => { COMPRESS => 'gzip',
                               SUFFIX   => 'gz',
-                              PREOP    => $preop },
+                              ($preop ? (PREOP => $preop) : ()), },
 	      'clean' => {
 		  'FILES' => $cleanup .
       		'tbyte.tif tmp0 tmp0.hdr tushort.tif ' .
