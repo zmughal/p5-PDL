@@ -12,7 +12,6 @@
 /tmp.*
 Benchmark/Bench.c
 Benchmark/blib/
-^CVS
 Libtmp/PCA/PCA*
 MANIFEST\.bak$
 MANIFEST\.old
