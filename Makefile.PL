@@ -465,11 +465,12 @@ push @prereq, ('OpenGL' => $PDL::Config{POGL_VERSION}) if $PDL::Config{USE_POGL}
 # push @prereq, ('ExtUtils::F77' => 1.10) unless $seen_f77conf;
 
 my @exe_files = map "bin/$_", qw(perldl pdldoc pptemplate);
-push @exe_files, "bin/pdl$Config{exe_ext}" if $^O !~ /MSWin/;
-my @cleanup = qw(
+my $pdlexe = "bin/pdl$Config{exe_ext}";
+push @exe_files, $pdlexe if $^O !~ /MSWin/;
+my @cleanup = ($pdlexe, qw(
     bin/pdldoc.db Changes.new
     t/callext$(OBJ_EXT) t/callext.$(DLEXT)
-);
+));
 
 ##############################
 # Hack to include fPIC on x86_64 systems -
@@ -483,15 +484,6 @@ if($Config{archname}=~m/x86_64/) {
 my $preop = '';
 $preop .= q[git log --stat --since='29 Apr 2009' > Changes.new && $(MV) Changes.new $(DISTVNAME)/Changes] if $^O ne 'MSWin32';
 
-my @pl_files = qw(
-  lib/PDL/Doc/Config.pm
-  lib/PDL/Core/pdlcore.h
-  lib/PDL/Core/pdl.h
-  lib/PDL/Core/pdlsimple.h
-  lib/PDL/Core.pm
-  lib/PDL/PP/Dump.pm
-);
-
 my %makefile_hash = (
   'PREREQ_PM' => { @prereq },
   'CONFIGURE_REQUIRES' => {
@@ -501,7 +493,6 @@ my %makefile_hash = (
   'NAME' => 'PDL',
   'VERSION_FROM' => 'lib/PDL/Version.pm',
   'EXE_FILES' => \@exe_files,
-  'PL_FILES' => { map { ("$_.PL" => $_) } @pl_files },
   'MIN_PERL_VERSION' => '5.010',
   'META_MERGE' => {
      no_index => { directory => [ 'Lib/FFTW' ], },
@@ -662,6 +653,20 @@ ppm: doctest ppd
 	$(RM_RF) $(DISTWIN32NAME)
 EOT
   join '', @m;
+}
+
+sub MY::init_PM {
+  package MY;
+  my ($self) = @_;
+  $self->SUPER::init_PM;
+  for my $pm (keys %{ $self->{PM} }) {
+    next unless (my $nonPL = $pm) =~ s/\.PL$//;
+    $self->{PM}{$nonPL} = delete $self->{PM}{$pm};
+    $self->{PM}{$nonPL} =~ s/\.PL$//i;
+    $self->{realclean}{FILES} .= " $nonPL";
+    next if $nonPL =~ /Types\.pm/; # we do that ourselves already
+    $self->{PL_FILES}{$pm} = $nonPL;
+  }
 }
 
 # warn if vital modules are missing
