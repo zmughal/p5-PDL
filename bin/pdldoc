@@ -1,38 +1,4 @@
-use strict;
-use Config;
-use File::Basename qw(&basename &dirname);
-use IO::File;
-
-my $file = shift @ARGV;
-unlink $file if -f $file;
-open my $fh, ">", $file or die "Can't create $file: $!";
-
-# check for bad value support
-our $bvalflag;
-use File::Spec;
-require File::Spec->catfile( "Basic", "Core", "badsupport.p" );
-
-my $usage_info;
-if ( $bvalflag ) {
-    print "Extracting $file (WITH bad value support)\n";
-    $usage_info = "[-a] [-b] [-h] [-s] [-u] <string>";
-} else {
-    print "Extracting $file (NO bad value support)\n";
-    $usage_info = "[-a] [-h] [-s] [-u] <string>";
-}                                                                               
-
-# In this section, perl variables will be expanded during extraction.
-# You can use $Config{...} to use Configure variables.
-
-print $fh <<"!GROK!THIS!";
-$Config{'startperl'}
-    eval 'exec perl -S \$0 "\$@"'
-        if 0;
-!GROK!THIS!
-
-# In the following, perl variables are not expanded during extraction.
-
-print $fh <<'!NO!SUBS!';
+#!perl -w
 
 use strict;
 $|++;
@@ -50,35 +16,20 @@ use File::Basename;
 
 our $VERSION = '0.3';
 
-my $bvalflag = $PDL::Config{WITH_BADVAL} || 0;
-
 my %options = 
     ( a => \&apropos, 
-!NO!SUBS!
-
-      print $fh '      b => \&badinfo,' . "\n" if $bvalflag;
-
-print $fh <<'!NO!SUBS!';
+      b => \&badinfo,
       h => \&help, s => \&sig, u => \&usage );
 
 my $name = basename( $0 );
 my $usage = <<"EOH";
-!NO!SUBS!
-
-    print $fh "Usage: \$name $usage_info\n";
-
-print $fh <<'!NO!SUBS!';
+Usage: $name [-a] [-b] [-h] [-s] [-u] <string>
 
 This program provides command-line access to the PDL documentation.
 If no flag is specified, -h is assumed.
 
   -a (apropos) searches the documentation for the string
-!NO!SUBS!
-
-print $fh "  -b (badinfo) does the function support bad values?\n" 
-    if $bvalflag;
-    
-print $fh <<'!NO!SUBS!';
+  -b (badinfo) does the function support bad values?
   -h (help)    prints the help for the function/module/document
   -s (sig)     prints the signature of the function
   -u (usage)   gives usage information on the function
@@ -111,32 +62,12 @@ B<pdldoc> <text>
 
 =cut
 
-!NO!SUBS!
-
-    if ( $bvalflag ) {
-	print $fh <<'!NO!SUBS!';
 B<pdldoc> [B<-a>] [B<-b>] [B<-h>] [B<-s>] [B<-u>] <text>
-!NO!SUBS!
-} else {
-	print $fh <<'!NO!SUBS!';
-B<pdldoc> [B<-a>] [B<-h>] [B<-s>] [B<-u>] <text>
-!NO!SUBS!
-}
-
-print $fh <<'!NO!SUBS!';
 
 =head1 DESCRIPTION
 
 The aim of B<pdldoc> is to provide the same functionality
-as the C<apropos>, C<help>, C<sig>, 
-
-=cut
-
-!NO!SUBS!
-
-    print $fh "C<badinfo>, \n" if $bvalflag;
-
-print $fh <<'!NO!SUBS!';
+as the C<apropos>, C<help>, C<sig>, C<badinfo>,
 and C<usage> commands available in the L<perldl|PDL::perldl>
 and L<pdl2|pdl2> shells.
 
@@ -155,20 +86,10 @@ This is the default option.
 
 Regex search PDL documentation database.
 
-=cut
-
-!NO!SUBS!
-
-print $fh <<'!NO!SUBS!' if $bvalflag;
 =item B<-b> badinfo
 
 Information on the support for bad values provided by the function.
 
-=cut
-
-!NO!SUBS!
-
-print $fh <<'!NO!SUBS!';
 =item B<-s> sig
 
 prints signature of PDL function.
@@ -193,12 +114,3 @@ This is pdldoc version 0.3.
 
 Doug Burke <burke at ifa dot hawaii dot edu>.
 Chris Marshall <chm at cpan dot org>.
-
-=cut
-
-!NO!SUBS!
-
-$fh->close;
-chmod 0555, $file;
-
-# end

@@ -123,7 +123,7 @@ README
 Release_Notes
 TODO
 bin/pdl.c
-bin/pdldoc.PL
+bin/pdldoc
 bin/perldl
 bin/pptemplate
 cygwin/INSTALL

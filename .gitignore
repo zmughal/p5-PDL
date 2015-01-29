@@ -114,7 +114,6 @@ MANIFEST.bak
 _Inline/
 _eumm
 bin/pdl
-bin/pdldoc
 gsl.pl
 lib/PDL/Config.pm
 lib/PDL/Core.pm
