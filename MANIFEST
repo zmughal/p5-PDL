@@ -122,7 +122,7 @@ Makefile.PL
 README
 Release_Notes
 TODO
-bin/pdl.c.PL
+bin/pdl.c
 bin/pdldoc.PL
 bin/perldl.PL
 bin/pptemplate.PL

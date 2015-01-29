@@ -468,7 +468,7 @@ my @exe_files = map "bin/$_", qw(perldl pdldoc pptemplate);
 push @exe_files, "bin/pdl$Config{exe_ext}" if $^O !~ /MSWin/;
 my @cleanup = (@exe_files, qw(
     bin/pdldoc.db Changes.new
-    t/callext$(OBJ_EXT) t/callext.$(DLEXT) bin/pdl.c
+    t/callext$(OBJ_EXT) t/callext.$(DLEXT)
 ));
 
 ##############################
@@ -490,7 +490,6 @@ my @pl_files = qw(
   lib/PDL/Core/pdlsimple.h
   lib/PDL/Core.pm
   lib/PDL/PP/Dump.pm
-  bin/pdl.c
   bin/pdldoc
   bin/pptemplate
   bin/perldl
