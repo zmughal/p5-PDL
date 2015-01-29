@@ -466,10 +466,11 @@ push @prereq, ('OpenGL' => $PDL::Config{POGL_VERSION}) if $PDL::Config{USE_POGL}
 
 my @exe_files = map "bin/$_", qw(perldl pdldoc pptemplate);
 push @exe_files, "bin/pdl$Config{exe_ext}" if $^O !~ /MSWin/;
-my @cleanup = (@exe_files, qw(
+my @cleanup = qw(
+    bin/pdldoc bin/pptemplate
     bin/pdldoc.db Changes.new
     t/callext$(OBJ_EXT) t/callext.$(DLEXT)
-));
+);
 
 ##############################
 # Hack to include fPIC on x86_64 systems -
@@ -492,7 +493,6 @@ my @pl_files = qw(
   lib/PDL/PP/Dump.pm
   bin/pdldoc
   bin/pptemplate
-  bin/perldl
 );
 
 my %makefile_hash = (

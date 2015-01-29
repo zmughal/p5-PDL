@@ -124,7 +124,7 @@ Release_Notes
 TODO
 bin/pdl.c
 bin/pdldoc.PL
-bin/perldl.PL
+bin/perldl
 bin/pptemplate.PL
 cygwin/INSTALL
 cygwin/README
