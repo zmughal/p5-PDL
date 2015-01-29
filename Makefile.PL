@@ -656,6 +656,15 @@ EOT
   join '', @m;
 }
 
+# the .PLs in DIR below rely on PDL::{Config,Types} being in blib already
+sub MY::top_targets {
+  package MY;
+  my ($self) = @_;
+  my $super = $self->SUPER::top_targets;
+  $super =~ s#^subdirs_(?:pure_nolink|static|dynamic)\s*:+.*?$#$& pm_to_blib#m;
+  $super;
+}
+
 sub MY::init_PM {
   package MY;
   my ($self) = @_;
@@ -668,6 +677,7 @@ sub MY::init_PM {
     next if $nonPL =~ /Types\.pm/; # we do that ourselves already
     $self->{PL_FILES}{$pm} = $nonPL;
   }
+  $self->{PM}{'lib/PDL/Config.pm'} = 'blib/lib/PDL/Config.pm';
 }
 
 # warn if vital modules are missing

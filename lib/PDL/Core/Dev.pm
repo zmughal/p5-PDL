@@ -342,6 +342,7 @@ sub postamble {
   my $oneliner = sprintf $MM->oneliner(<<'EOF'), $devpm;
 require "%s"; PDL::Core::Dev->import(); genpp();
 EOF
+  $oneliner =~ s/ABSPERLRUN/${&}INST/; # include blib for PDL::{Config,Types}
   sprintf <<'EOF', $oneliner;
 
 # Rules for the generic preprocessor
