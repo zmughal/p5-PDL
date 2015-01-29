@@ -125,7 +125,7 @@ TODO
 bin/pdl.c
 bin/pdldoc.PL
 bin/perldl
-bin/pptemplate.PL
+bin/pptemplate
 cygwin/INSTALL
 cygwin/README
 cygwin/drivers.list
