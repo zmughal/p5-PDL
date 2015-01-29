@@ -569,6 +569,7 @@ EOF
 
 sub MY::postamble {
   my ($self) = @_;
+  require PDL::Core::Dev; # needed since makeaperl doesn't call all DIR
   my @m = PDL::Core::Dev::postamble() . "\n\n";
   push @m, ::make_from_PL('lib/PDL/Core.pm', 'lib/PDL/Types.pm Basic/Core/badsupport.p');
   push @m, ::make_from_PL('lib/PDL/Core/pdl.h', 'Basic/Core/mymalloc.p lib/PDL/Types.pm');

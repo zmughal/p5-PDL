@@ -45,12 +45,16 @@ ppcode.out
 
 # Perl build files
 
+_eumm
 pm_to_blib
 blib
 *.bs
 Makefile
+Makefile.aperl
 MYMETA.yml
 MYMETA.json
+perl
+perlmain.c
 
 # Editor temp files
 
@@ -112,7 +116,6 @@ Demos/BAD2_demo.pm
 Demos/BAD_demo.pm
 MANIFEST.bak
 _Inline/
-_eumm
 bin/pdl
 gsl.pl
 lib/PDL/Config.pm
