@@ -9,6 +9,18 @@ WriteMakefile(
     'NAME'	=> 'PDL',
     'VERSION_FROM' => '../lib/PDL/Version.pm',
     NO_MYMETA => 1,
+    DIR => [ qw(
+        Core
+        Bad
+        Complex
+        Math
+        MatrixOps
+        Primitive
+        Slices
+        Test
+        Ufunc
+    ) ],
+#        Ops
 );
 
 # modify clean method not to delete files named 'core'
