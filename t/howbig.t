@@ -1,15 +1,26 @@
 # Test datatype sizes in bytes are correct
 
-use t::lib::TestHelper; # TODO migrate
+use strict;
+use warnings;
+
+use Test::More;
 use PDL::LiteF;
 use PDL::Core ':Internal'; # For howbig()
 
-print "1..6\n";
+my @types = (
+	{ typefunc => *byte  , size => 1 },
+	{ typefunc => *short , size => 2 },
+	{ typefunc => *ushort, size => 2 },
+	{ typefunc => *long  , size => 4 },
+	{ typefunc => *float , size => 4 },
+	{ typefunc => *double, size => 8 },
+);
 
-num_ok(1, howbig(byte(42)->get_datatype)==1);
-num_ok(2, howbig(short(42)->get_datatype)==2);
-num_ok(3, howbig(ushort(42)->get_datatype)==2);
-num_ok(4, howbig(long(42)->get_datatype)==4);
-num_ok(5, howbig(float(42)->get_datatype)==4);
-num_ok(6, howbig(double(42)->get_datatype)==8);
+plan tests => 0+@types;
 
+for my $type (@types) {
+	my $pdl = $type->{typefunc}(42); # build a PDL with datatype $type->{type}
+	is( howbig( $pdl->get_datatype ), $type->{size} );
+}
+
+done_testing;
