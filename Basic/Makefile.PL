@@ -11,7 +11,6 @@ WriteMakefile(
     NO_MYMETA => 1,
     DIR => [ qw(
         Core
-        Bad
         Complex
         Math
         MatrixOps
@@ -21,6 +20,7 @@ WriteMakefile(
         Ufunc
     ) ],
 #        Ops
+#        Bad
 );
 
 # modify clean method not to delete files named 'core'
