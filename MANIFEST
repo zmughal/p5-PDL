@@ -54,8 +54,6 @@ Basic/MatrixOps/simq.c
 Basic/MatrixOps/sslib.c
 Basic/MatrixOps/sslib.h
 Basic/MatrixOps/svd.c
-Basic/Ops/Makefile.PL
-Basic/Ops/ops.pd
 Basic/Primitive/Makefile.PL
 Basic/Primitive/primitive.pd
 Basic/Slices/Makefile.PL
@@ -203,6 +201,7 @@ lib/PDL/NiceSlice/FilterUtilCall.pm
 lib/PDL/NiceSlice/ModuleCompile.pm
 lib/PDL/Objects.pod
 lib/PDL/Options.pm
+lib/PDL/Ops.pm
 lib/PDL/PP.pm
 lib/PDL/PP.pod
 lib/PDL/PP/CType.pm
