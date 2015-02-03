@@ -55,6 +55,8 @@ MYMETA.yml
 MYMETA.json
 perl
 perlmain.c
+lib/PDL/Ops/Inline.pm
+.inline
 
 # Editor temp files
 

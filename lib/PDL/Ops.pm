@@ -2,8 +2,8 @@ package PDL::Ops;
 
 use strict;
 use warnings;
-use Inline Pdlpp => Config => clean_after_build => 0;
-use Inline Pdlpp => 'DATA', name => __PACKAGE__;
+use PDL::Ops::Inline Pdlpp => Config => clean_after_build => 0;
+use PDL::Ops::Inline Pdlpp => 'DATA';
 use parent 'PDL::Exporter';
 
 our @EXPORT_OK = qw(assgn log10);

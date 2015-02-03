@@ -532,6 +532,7 @@ my %makefile_hash = (
     inline => {
       module => [ qw(PDL::Ops) ],
       ilsm => 'Inline::Pdlpp',
+      bundle => 0,
     },
   },
 );
@@ -568,7 +569,7 @@ my $inline_postamble = \&MY::postamble; # imported by Inline::Module->import
   my $self = shift;
   my $pdl_text = pdl_my_postamble($self, @_);
   my $inline_text = $self->$inline_postamble(@_);
-  $inline_text =~ s/\bABSPERLRUN\b/${&}INST/; # PDL stuff relies on blib
+  $inline_text =~ s/\bABSPERLRUN\b/${&}INST/g; # PDL stuff relies on blib
   join "\n", $pdl_text, $inline_text;
 };
 }
