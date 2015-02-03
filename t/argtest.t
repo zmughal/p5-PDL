@@ -6,14 +6,6 @@ use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
-# sub tapprox {
-#         my($a,$b,$c,$d) = @_;
-#         $c = abs($a-$b);
-#         $d = max($c);
-#         return $d < 0.01;
-# }
-
-
 sub eprint {
 	print "EXPECT ERROR NEXT:\n-----\n";
 	print $_[0];

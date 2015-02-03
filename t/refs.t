@@ -7,13 +7,6 @@ use PDL::LiteF;
 # PDL::Core::set_debugging(1);
 kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
-# sub tapprox {
-# 	my($a,$b,$c,$d) = @_;
-# 	$c = abs($a-$b);
-# 	$d = max($c);
-# 	$d < 0.01;
-# }
-
 print "1..2\n";
 
 if(1) {
