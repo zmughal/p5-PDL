@@ -2,13 +2,6 @@ use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
-# sub tapprox {
-# 	my($a,$b,$c,$d) = @_;
-# 	$c = abs($a-$b);
-# 	$d = max($c);
-# 	return $d < 0.01;
-# }
-
 print "1..1\n";
 
 # This is something that would cause an exception on 1.91_00:

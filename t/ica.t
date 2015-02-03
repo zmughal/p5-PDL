@@ -20,14 +20,6 @@ use Carp;
 
 $SIG{__DIE__} = sub {print Carp::longmess(@_); die FOO;};
 
-# sub tapprox {
-# 	my($a,$b,$c,$d) = @_;
-# 	$c = abs($a-$b);
-# 	$d = max($c);
-# #	print "APR: $a,$b,$c,$d;\n";
-# 	$d < 0.001;
-# }
-
 print "1..1\n";
 unless ($loaded) {
         #print STDERR "PDL::Slatec not installed. Skipping all tests.\n";
