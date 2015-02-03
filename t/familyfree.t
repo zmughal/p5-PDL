@@ -1,18 +1,23 @@
 use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
-kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
-print "1..1\n";
+use strict;
+use warnings;
+
+use Test::More tests => 1;
+
+kill 'INT',$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
+
 
 # This is something that would cause an exception on 1.91_00:
 # when the original was undef'd, xchghashes would barf.
 
-$a = xvals zeroes(5,5);
+my $pa = xvals zeroes(5,5);
+my $pb = $pa->slice(':,2:3');
 
-$b = $a->slice(':,2:3');
+$pa = 1;  # Undefine orig. a
+$pb += 1;
 
-$a = 1;  # Undefine orig. a
+ok(1);
 
-$b += 1;
-
-num_ok(1,1);
+done_testing;
