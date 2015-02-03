@@ -1,31 +1,42 @@
 use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
+use Test::More tests => 5;
+use Test::Exception;
+
+use strict;
+use warnings;
 
 $|=1;
 
 #  PDL::Core::set_debugging(1);
-kill INT,$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
+kill 'INT',$$  if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
 sub pok { print "ok $_[0]\n" }
 
-print "1..5\n";
+{
+	my $pa = zeroes 1,1,1;
+	ok !$pa;
+}
 
-$a = zeroes 1,1,1;
-if ($a) { print "not " }
-pok 1;
+{
+	my $pa = ones 3;
+	throws_ok { print "oops\n" if $pa } qr/multielement/;
+}
 
-$a = ones 3;
-eval {print "oops\n" if $a};
-print "ERROR WAS: '$@'\n";
-num_ok(2,$@ =~ /multielement/);
+{
+	my $pa = ones 3;
+	ok( all $pa );
+}
 
-unless (all $a) { print "not " };
-pok 3;
+{
+	my $pa = pdl byte, [ 0, 0, 1 ];
+	ok( any $pa > 0 );
+}
 
-$a = pdl byte, [ 0, 0, 1 ];
-unless (any $a > 0) { print "not " };
-pok 4;
+{
+	my $pa = ones 3;
+	my $pb = $pa + 1e-4;
+	ok( all PDL::approx($pa, $pb, 1e-3) ) ;
+}
 
-$a = ones 3;
-$b = $a + 1e-4;
-num_ok(5, all PDL::approx $a, $b, 1e-3);
+done_testing;
