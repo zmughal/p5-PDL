@@ -1,83 +1,85 @@
 # XXX SOME TESTS DISABLED
 
+# XXX checking PDL using string equality
+
 use t::lib::TestHelper;
 use PDL::LiteF;
+use Test::More tests => 33;
 
-kill INT,$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
+use strict;
+use warnings;
+
+kill 'INT',$$ if $ENV{UNDER_DEBUGGER}; # Useful for debugging.
 
 # XXX
 
-print "1..33\n";
+{
+	# 1. Test that changes do flow
 
-if(1) {
+	my $pa = pdl 2,3,4;
+	$pa->doflow;
+	my $pb = $pa + $pa;
 
-{my ($a,$b,$c);
+	is($pb->at(0), 4);
+	is($pb->at(1), 6);
 
-# 1. Test that changes do flow
+	$pa->set(0,50);
 
-$a = pdl 2,3,4;
+	is($pb->at(0), 100);
+	is($pb->at(1), 6);
+}
 
-$a->doflow;
+{
+	# 2. If we don't want flow, we mustn't have it.
 
-$b = $a + $a;
+	my $pa = pdl 2,3,4;
 
-caller_num_ok(1,($b->at(0) == 4));
-caller_num_ok(2,($b->at(1) == 6));
+	my $pb = $pa + $pa;
 
-$a->set(0,50);
+	is($pb->at(0), 4);
+	is($pb->at(1), 6);
 
-caller_num_ok(3,($b->at(0) == 100));
-caller_num_ok(4,($b->at(1) == 6));
+	$pa->set(0,50);
 
-# 2. If we don't want flow, we mustn't have it.
+	is($pb->at(0), 4);
+	is($pb->at(1), 6);
+}
 
-$a = pdl 2,3,4;
 
-$b = $a + $a;
+{
+	# 3. Test what happens when we assign to $pb. (no coredumps allowed)
+	my $pa = pdl 2,3,4;
+	$pa->doflow;
 
-caller_num_ok(5,($b->at(0) == 4));
-caller_num_ok(6,($b->at(1) == 6));
+	my $pb = $pa + $pa;
 
-$a->set(0,50);
+	is($pb->at(0), 4);
+	is($pb->at(1), 6);
 
-caller_num_ok(7,($b->at(0) == 4));
-caller_num_ok(8,($b->at(1) == 6));
+	$pb->set(0,50); # This must break the dataflow completely
 
-$ind = 9;
+	is($pb->at(0), 50);
+	is($pb->at(1), 6);
+	is($pa->at(0), 2);
+	is($pa->at(1), 3);
 
-# 3. Test what happens when we assign to $b. (no coredumps allowed)
+	$pa->set(0,33);
 
-$a = pdl 2,3,4;
+	is($pb->at(0), 50);
+	is($pb->at(1), 6);
+	is($pa->at(0), 33);
+	is($pa->at(1), 3);
+}
 
-$a->doflow;
+{
+	# 4. Now a basic slice test. Once Incs etc. are back, need
+	# to do this also with other kinds of slices.
 
-$b = $a + $a;
+	# This gets so hairy that we want to use strings for testing.
 
-caller_num_ok($ind++,($b->at(0) == 4));
-caller_num_ok($ind++,($b->at(1) == 6));
+	my $pa = pdl [2,3,4],[5,6,7];
 
-$b->set(0,50); # This must break the dataflow completely
-
-caller_num_ok($ind++,($b->at(0) == 50));
-caller_num_ok($ind++,($b->at(1) == 6));
-caller_num_ok($ind++,($a->at(0) == 2));
-caller_num_ok($ind++,($a->at(1) == 3));
-
-$a->set(0,33);
-
-caller_num_ok($ind++,($b->at(0) == 50));
-caller_num_ok($ind++,($b->at(1) == 6));
-caller_num_ok($ind++,($a->at(0) == 33));
-caller_num_ok($ind++,($a->at(1) == 3));
-
-# 4. Now a basic slice test. Once Incs etc. are back, need
-# to do this also with other kinds of slices.
-
-# This gets so hairy that we want to use strings for testing.
-
-$a = pdl [2,3,4],[5,6,7];
-
-caller_num_ok($ind++, ("$a" eq <<END));
+	is("$pa", <<END);
 
 [
  [2 3 4]
@@ -85,8 +87,8 @@ caller_num_ok($ind++, ("$a" eq <<END));
 ]
 END
 
-$b = $a->slice('1:2,:');
-caller_num_ok($ind++, ("$b" eq <<END));
+	my $pb = $pa->slice('1:2,:');
+	is("$pb", <<END);
 
 [
  [3 4]
@@ -94,8 +96,8 @@ caller_num_ok($ind++, ("$b" eq <<END));
 ]
 END
 
-$a->set(1,1,9);
-caller_num_ok($ind++, ("$a" eq <<END));
+	$pa->set(1,1,9);
+	is("$pa", <<END);
 
 [
  [2 3 4]
@@ -103,7 +105,7 @@ caller_num_ok($ind++, ("$a" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$b" eq <<END));
+	is("$pb", <<END);
 
 [
  [3 4]
@@ -111,8 +113,8 @@ caller_num_ok($ind++, ("$b" eq <<END));
 ]
 END
 
-$c = $a->slice('0:1,:');
-caller_num_ok($ind++, ("$c" eq <<END));
+	my $pc = $pa->slice('0:1,:');
+	is("$pc", <<END);
 
 [
  [2 3]
@@ -120,9 +122,8 @@ caller_num_ok($ind++, ("$c" eq <<END));
 ]
 END
 
-$b->set(0,0,8);
-
-caller_num_ok($ind++, ("$a" eq <<END));
+	$pb->set(0,0,8);
+	is("$pa", <<END);
 
 [
  [2 8 4]
@@ -130,7 +131,7 @@ caller_num_ok($ind++, ("$a" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$b" eq <<END));
+	is("$pb", <<END);
 
 [
  [8 4]
@@ -138,19 +139,24 @@ caller_num_ok($ind++, ("$b" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$c" eq <<END));
+	is("$pc", <<END);
 
 [
  [2 8]
  [5 9]
 ]
 END
+
 }
+
 
 # 5. Now, to the hairy stuff of generations and progenitors.
 
 # XXX DISABLED
-if(0) {my($a,$a2,$b,$c,$d,$e,$f,$g,@ps);
+SKIP: {
+	if( 0 ) {
+
+	my($pa,$a2,$pb,$pc,$pd,$pe,$pf,$pg,@ps);
 
 # We set up the following dependency graph:
 #
@@ -168,12 +174,12 @@ if(0) {my($a,$a2,$b,$c,$d,$e,$f,$g,@ps);
 # which, although it does not exercise *every* code path, still
 # does a lot.
 
-$a = pdl [2,3,4],[5,6,7];
-$a->doflow;
+	$pa = pdl [2,3,4],[5,6,7];
+	$pa->doflow;
 
-$b = $a + 1;
+	$pb = $pa + 1;
 
-caller_num_ok($ind++, ("$b" eq <<END));
+	is("$pb", <<END);
 
 [
  [3 4 5]
@@ -182,13 +188,13 @@ caller_num_ok($ind++, ("$b" eq <<END));
 END
 
 
-#print $b;
+	#note $pb;
 
-# $foo2 = pdl 2;
+	# $foo2 = pdl 2;
 
-$c = $b * 2; # This should stay the same flowed structure.
+	$pc = $pb * 2; # This should stay the same flowed structure.
 
-caller_num_ok($ind++, ("$c" eq <<END));
+	is("$pc", <<END);
 
 [
  [ 6  8 10]
@@ -196,45 +202,45 @@ caller_num_ok($ind++, ("$c" eq <<END));
 ]
 END
 
-# print $c;
+	# note $pc;
 
-$d = $b->slice('1:2,:');
-$e = $d->slice('1,:');
+	$pd = $pb->slice('1:2,:');
+	$pe = $pd->slice('1,:');
 
-# NOW
+	# NOW
 
-#print "DDUMP1\n";
-# $d->jdump();
+	#print "DDUMP1\n";
+	# $pd->jdump();
 
-$d += 0.5;
+	$pd += 0.5;
 
-#print "DDUMP2\n";
-# $d->jdump();
+	#print "DDUMP2\n";
+	# $pd->jdump();
 
-# print $d;
-# $d->jdump();
+	# print $pd;
+	# $pd->jdump();
 
-$f = $b * 2;
+	$pf = $pb * 2;
 
-# This checks whether the system realizes to look for the new $e.
-$g = $e - 15;
+	# This checks whether the system realizes to look for the new $pe.
+	$pg = $pe - 15;
 
-# print $a,$b,$c,$d,$e,$f,$g;
+	# print $pa,$pb,$pc,$pd,$pe,$pf,$pg;
 
-$a->set(0,0,8);
-$a->set(1,0,9);
-$a->set(2,0,10);
-@ps = ($a,$b,$c,$d,$e,$f,$g);
+	$pa->set(0,0,8);
+	$pa->set(1,0,9);
+	$pa->set(2,0,10);
+	@ps = ($pa,$pb,$pc,$pd,$pe,$pf,$pg);
 
-# print "PRINTS\n"; $b->jdump;
-# $c->jdump;
+	# print "PRINTS\n"; $pb->jdump;
+	# $pc->jdump;
 
-#map {if($_) {# $_->jdump;
-#	print $_} else {print "FOO\n";}} @ps;
+	#map {if($_) {# $_->jdump;
+	#	print $_} else {print "FOO\n";}} @ps;
 
-undef @ps;
+	undef @ps;
 
-caller_num_ok($ind++, ("$a" eq <<END));
+	is("$pa", <<END);
 
 [
  [ 8  9 10]
@@ -242,7 +248,7 @@ caller_num_ok($ind++, ("$a" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$b" eq <<END));
+	is("$pb", <<END);
 
 [
  [   9 10.5 11.5]
@@ -250,7 +256,7 @@ caller_num_ok($ind++, ("$b" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$c" eq <<END));
+	is("$pc", <<END);
 
 [
  [18 20 22]
@@ -258,7 +264,7 @@ caller_num_ok($ind++, ("$c" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$d" eq <<END));
+	is("$pd", <<END);
 
 [
  [10.5 11.5]
@@ -266,7 +272,7 @@ caller_num_ok($ind++, ("$d" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$e" eq <<END));
+	is("$pe", <<END);
 
 [
  [11.5]
@@ -274,7 +280,7 @@ caller_num_ok($ind++, ("$e" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$f" eq <<END));
+	is("$pf", <<END);
 
 [
  [18 21 23]
@@ -282,7 +288,7 @@ caller_num_ok($ind++, ("$f" eq <<END));
 ]
 END
 
-caller_num_ok($ind++, ("$g" eq <<END));
+	is("$pg", <<END);
 
 [
  [-3.5]
@@ -290,55 +296,56 @@ caller_num_ok($ind++, ("$g" eq <<END));
 ]
 END
 
-
+	}
 }
-}
 
+SKIP: {
 # 6. Now, what if the mutated one is actually the parent.
-if(0) { # XXX DISABLED
-	my($a,$b,$c,$d);
-	$a = pdl 2,3,4;
-	$a->doflow;
-	$a2 = pdl 2;
-	$b = $a * $a2;
+	if(0) { # XXX DISABLED
+		my($pa,$pb,$pc,$pd);
+		$pa = pdl 2,3,4;
+		$pa->doflow;
+		my $a2 = pdl 2;
+		$pb = $pa * $a2;
 
-#	print $b;
+	#	note $pb;
 
-caller_num_ok($ind++, ("$b" eq "[4 6 8]"));
+		is("$pb", "[4 6 8]");
 
-#	$b->jdump;
+	#	$pb->jdump;
 
-	$c = pdl 1;
-	$b += $c;
-#	$b->jdump;
-#	$c->jdump;
+		$pc = pdl 1;
+		$pb += $pc;
+	#	$pb->jdump;
+	#	$pc->jdump;
 
-#	print $b;
-caller_num_ok($ind++, ("$b" eq "[5 7 9]"));
-#	$b->jdump;
+	#	note $pb;
+		is("$pb", "[5 7 9]");
+	#	$pb->jdump;
 
-#	print "TOSETA\n";
-	$a->set(1,5);
-#	print "TODUMPA\n";
-#	$a->jdump();
-#	$b->jdump();
-#	print "TOPRINTB\n";
-#	print $b;
-caller_num_ok($ind++, ("$b" eq "[5 11 9]"));
+	#	note "TOSETA\n";
+		$pa->set(1,5);
+	#	note "TODUMPA\n";
+	#	$pa->jdump();
+	#	$pb->jdump();
+	#	note "TOPRINTB\n";
+	#	note $pb;
+		is("$pb", "[5 11 9]");
 
-#	print "EXITING SCOPE\n";
+	#	print "EXITING SCOPE\n";
 
+	}
 }
 #print "EXITED SCOPE\n";
 
 # 7. What about axisvals:
 {
-	my($a,$b);
-	$a = zeroes 5,3;
+	my($pa,$pb);
+	$pa = zeroes 5,3;
 
-#	print $a;
+#	note $pa;
 
-caller_num_ok($ind++, ("$a" eq <<END));
+	is("$pa", <<END);
 
 [
  [0 0 0 0 0]
@@ -348,21 +355,21 @@ caller_num_ok($ind++, ("$a" eq <<END));
 END
 
 
-#	print "NEW_OR_INPLACE_NOW\n";
-	$b = PDL::Core::new_or_inplace($a);
-#	print "NEW_OR_INPLACE_DONE\n";
-#	$b->jdump();
-	$c = $b->xchg(0,1);
+#	note "NEW_OR_INPLACE_NOW\n";
+	$pb = PDL::Core::new_or_inplace($pa);
+#	note "NEW_OR_INPLACE_DONE\n";
+#	$pb->jdump();
+	my $pc = $pb->xchg(0,1);
 
-#	$c->jdump();
-	$c->make_physical();
-#	$c->jdump();
+#	$pc->jdump();
+	$pc->make_physical();
+#	$pc->jdump();
 
-	axisvalues($c);
+	axisvalues($pc);
 
-#	print $c;
+#	note $pc;
 
-caller_num_ok($ind++, ("$c" eq <<END));
+	is("$pc", <<END);
 
 [
  [0 1 2]
@@ -375,9 +382,9 @@ END
 
 
 
-#	print $b;
+#	note $pb;
 
-caller_num_ok($ind++, ("$b" eq <<END));
+	is("$pb", <<END);
 
 [
  [0 0 0 0 0]
@@ -386,9 +393,9 @@ caller_num_ok($ind++, ("$b" eq <<END));
 ]
 END
 
-#	print $a;
+#	note $pa;
 
-caller_num_ok($ind++, ("$a" eq <<END));
+	is("$pa", <<END);
 
 [
  [0 0 0 0 0]
@@ -398,29 +405,27 @@ caller_num_ok($ind++, ("$a" eq <<END));
 END
 
 
-#	$b->jdump;
-#	print $b;
+#	$pb->jdump;
+#	print $pb;
 #
-#	$b = axisvalues($a);
+#	$pb = axisvalues($pa);
 #
-#	print $b;
+#	note $pb;
 
 #       warn "Two tests disabled (31-32) as do not work\n";
 
-       if(1) { # These tests diaabled (do not work) XXX Do
+       if(1) { # These tests disabled (do not work) XXX Do
 
-         $a = zeroes 5,5;
-         $b = $a->slice("1:3,1:3");
-         my $c = $b->slice("(1),(1)");
-         caller_num_ok($ind++,($c->at() == 0));
-         $a .= 1;
-         caller_num_ok($ind++,($c->at() == 1));
-         $a .= 2;
-         caller_num_ok($ind++,($c->at() == 2));
+         my $pa = zeroes 5,5;
+         my $pb = $pa->slice("1:3,1:3");
+         my $pc = $pb->slice("(1),(1)");
+         is($pc->at(), 0);
+         $pa .= 1;
+         is($pc->at(), 1);
+         $pa .= 2;
+         is($pc->at(), 2);
        }
 
 }
 
-exit 0;
-
-# print "DONE\n";
+done_testing;
