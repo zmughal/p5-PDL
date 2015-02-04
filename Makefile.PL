@@ -406,6 +406,7 @@ my @prereq = (
 	   'Text::Balanced'      => 1.89,      # for PDL::NiceSlice
            'Test::Warn'          => 0,         # for t/pptest.t
 	   'Test::Exception'     => 0,
+	   'Test::Deep'          => 0,
 	  );
 
 # add OpenGL version dependency for CPAN to follow
