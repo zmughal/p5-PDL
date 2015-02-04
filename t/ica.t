@@ -1,8 +1,14 @@
 
-use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 
+# TODO This file does not currently test anything beyond loading PDL::Slatec.
+
+#use strict; # TODO fix the disabled code and enable strict
+use warnings;
+use Test::More tests => 1;
+
 BEGIN {
+
         eval " use PDL::Slatec; ";
         $loaded = ($@ ? 0 : 1);
 	eval " use PDL::ICA; ";
@@ -20,7 +26,6 @@ use Carp;
 
 $SIG{__DIE__} = sub {print Carp::longmess(@_); die FOO;};
 
-print "1..1\n";
 unless ($loaded) {
         #print STDERR "PDL::Slatec not installed. Skipping all tests.\n";
         for (1..1) {
@@ -28,9 +33,13 @@ unless ($loaded) {
         }
         exit;
 }
-num_ok(1,$loaded);
+ok($loaded);
 
 #DEFERRED
+
+SKIP: { # XXX DISABLED
+	# XXX There are no tests in here.
+	# TODO change the print() to note()
 
 if(0) {
 
@@ -110,3 +119,6 @@ print $newdata;
 
 }
 
+}
+
+done_testing;
