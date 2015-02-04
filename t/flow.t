@@ -2,7 +2,6 @@
 
 # XXX checking PDL using string equality
 
-use t::lib::TestHelper;
 use PDL::LiteF;
 use Test::More tests => 33;
 

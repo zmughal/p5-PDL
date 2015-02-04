@@ -1,7 +1,6 @@
 # Test ->clump(). This is not yet good enough: we need
 # nasty test cases
 
-use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 use Test::More tests => 3;
 

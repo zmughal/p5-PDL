@@ -1,4 +1,3 @@
-use t::lib::TestHelper;
 use PDL::LiteF;
 
 use strict;
