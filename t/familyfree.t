@@ -1,4 +1,3 @@
-use t::lib::TestHelper; # TODO migrate
 use PDL::LiteF;
 
 use strict;

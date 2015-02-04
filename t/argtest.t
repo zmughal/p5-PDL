@@ -4,7 +4,6 @@
 use strict;
 use warnings;
 
-use t::lib::TestHelper; # TODO migrate
 use Test::More tests => 4;
 use Test::Exception;
 
