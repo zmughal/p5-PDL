@@ -1,5 +1,3 @@
-Basic/Bad/Makefile.PL
-Basic/Bad/bad.pd
 Basic/Complex/Makefile.PL
 Basic/Complex/complex.pd
 Basic/Core/Core.xs.PL
@@ -162,6 +160,7 @@ lib/Inline/Pdlpp.pm
 lib/PDL.pm
 lib/PDL/API.pod
 lib/PDL/AutoLoader.pm
+lib/PDL/Bad.pm
 lib/PDL/BadValues.pod
 lib/PDL/Basic.pm
 lib/PDL/Bugs.pod
