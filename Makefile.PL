@@ -7,7 +7,7 @@ use lib 'inc', Cwd::abs_path('lib'), Cwd::abs_path('inc');
 
 use Devel::CheckLib;
 use 5.010_000;
-use ExtUtils::MakeMaker 7.05_07;  # for XSMULTI
+use ExtUtils::MakeMaker 7.05_11;  # for XSMULTI
 use Config;
 use IO::File;
 use Inline::Module;
@@ -445,7 +445,7 @@ my @prereq = (
 	   'Astro::FITS::Header' => 0,
            'Convert::UU'         => 0,         # for PDL::IO::Dumper
            'Data::Dumper'        => 2.121,     # for PDL::IO::Dumper
-           'ExtUtils::MakeMaker' => 7.05_07,   # XSMULTI
+           'ExtUtils::MakeMaker' => 7.05_11,   # XSMULTI
 	   'File::Map'           => 0.57,      # test new mmap implementation
 	   'File::Spec'          => 0.6,
 	   'File::Temp'          => 0,
@@ -489,7 +489,7 @@ my %makefile_hash = (
   'PREREQ_PM' => { @prereq },
   'CONFIGURE_REQUIRES' => {
     'Devel::CheckLib' => 1.01,
-    'ExtUtils::MakeMaker' => 7.05_07,
+    'ExtUtils::MakeMaker' => 7.05_11,
   },
   'NAME' => 'PDL',
   'VERSION_FROM' => 'lib/PDL/Version.pm',
