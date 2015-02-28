@@ -392,6 +392,7 @@ my @prereq = (
            'Convert::UU'         => 0,         # for PDL::IO::Dumper
            'Data::Dumper'        => 2.121,     # for PDL::IO::Dumper
            'ExtUtils::MakeMaker' => 6.56,      # for CONFIGURE_REQUIRES support
+	   'ExtUtils::ParseXS'   => 3.01,
 	   'File::Map'           => 0.57,      # test new mmap implementation
 	   'File::Spec'          => 0.6,
 	   'File::Temp'          => 0,

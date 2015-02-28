@@ -39,12 +39,14 @@ before_install:
   - source ~/travis-perl-helpers/init
   - build-perl
   - perl -V
+  - perl -MExtUtils::ParseXS -e 'print $ExtUtils::ParseXS::VERSION, "\n"'
   - cpanm --quiet --notest ExtUtils::F77 Term::ReadLine::Gnu PGPLOT # do not need tests
   - build-dist
   - cd $BUILD_DIR             # $BUILD_DIR is set by the build-dist command
 install:
   - cpan-install --deps       # installs prereqs, including recommends
   - cpan-install --coverage   # installs converage prereqs, if enabled
+  - perl -MExtUtils::ParseXS -e 'print $ExtUtils::ParseXS::VERSION, "\n"'
   - make
 before_script:
   - coverage-setup
