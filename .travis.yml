@@ -2,7 +2,7 @@ language: perl
 sudo: true
 matrix:
   include:
-	  # start the first coverage early so that it starts before everything else
+    # start the first coverage early so that it starts before everything else
     - perl: "5.20"
       env: COVERAGE=1
     - perl: "5.10"
@@ -28,9 +28,6 @@ matrix:
       env: COVERAGE=1 PDL_WITH_BADVAL=0 # test with badval disabled + coverage
   allow_failures:
     - perl: blead
-    # currently allow Travis-CI builds without BADVAL to fail
-    - env: PDL_WITH_BADVAL=0
-    - env: COVERAGE=1 PDL_WITH_BADVAL=0
 before_install:
   - sudo apt-get update
   - sudo apt-get install build-essential libx11-dev pgplot5 libplplot-dev libgd2-xpm-dev libhdf4-alt-dev libproj-dev libvpx-dev libxpm-dev proj-bin libcfitsio3-dev libreadline-dev
@@ -53,11 +50,12 @@ install:
   - cpan-install --deps       # installs prereqs, including recommends
   - cpan-install --coverage   # installs converage prereqs, if enabled
   - prove t/00-report-prereqs.t
-  - make
+  # SYSTEM_CORES set by travis-perl-helpers
+  - if [ "$SERIAL_BUILD" == 1 ]; then make; else make -j$(( $SYSTEM_CORES * 2 )); fi
 before_script:
   - coverage-setup
 script:
-  - prove -b -v $(test-files) # for parallel testing, add --formatter TAP::Formatter::File -j$(test-jobs)
+  - if [ "$SERIAL_TESTING" == 1 ]; then prove -b -v $(test-files); else prove --formatter TAP::Formatter::File -j$(test-jobs) -b -v $(test-files); fi
 after_script:
   - perl -Iblib/lib -MPDL::Config -MData::Dumper -e 'print Dumper \%PDL::Config'
 after_success:
